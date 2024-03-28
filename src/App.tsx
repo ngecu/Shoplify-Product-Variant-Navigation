@@ -6,6 +6,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import UploadComponent from './Components/UploadComponent';
 import { Option } from './Interface/OptionInterface';
+import { Variant } from './Interface/VariantInterface';
 
 
 const { Header, Content, Sider } = Layout;
@@ -18,7 +19,9 @@ const App: React.FC = () => {
   const [nonDiscountedPrice, setNonDiscountedPrice] = useState<string>('');
   const [buyingPrice, setBuyingPrice] = useState<string>('')
   const [productOptions, setProductOptions] = useState<string[]>([]);
-  const [variants, setVariants] = useState<string[]>([]);
+  const [variants, setVariants] = useState<Variant[]>([]);
+  // const [optionValues, setOptionValues] = useState<{ [key: string]: string[] }>({});
+
   const [options, setOptions] = useState<Option[]>([{ name: '', values: [''], editing: true }]);
   const handleOptionChange = (index: number, key: keyof Option, value: string) => {
     const newOptions = [...options];
@@ -40,6 +43,8 @@ const App: React.FC = () => {
     const newOptions = [...options];
     newOptions[index].values.push('');
     setOptions(newOptions);
+
+    
   };
 
   const handleDeleteValue = (optionIndex: number, valueIndex: number) => {
@@ -61,15 +66,58 @@ const App: React.FC = () => {
     setOptions(updatedOptions);
   };
 
-  const handleGenerateVariants = () => {
-    // Implement your logic for generating variants
-  };
 
   const handleToggleEdit = (index: number) => {
     const newOptions = [...options];
     newOptions[index].editing = !newOptions[index].editing;
     setOptions(newOptions);
   };
+
+
+
+
+
+  const handleVariantChange = (index: number, key: string, value: string) => {
+    const newVariants = [...variants];
+    newVariants[index][key] = value;
+    setVariants(newVariants);
+  };
+
+  const handleGenerateVariants = () => {
+    console.log(options);
+    
+  };
+
+  // Define the generateOptionValueCombinations function
+const generateOptionValueCombinations = (options: string[][]): string[][] => {
+  if (options.length === 0) return [[]]; // Base case: empty array for no options
+
+  const [firstOption, ...restOptions] = options; // Destructure first option and rest options
+  console.log("first option ",firstOption);
+  console.log("rest option ",restOptions);
+  
+  const restCombinations = generateOptionValueCombinations(restOptions); // Generate combinations for rest of the options
+
+  const combinations: string[][] = [];
+  
+  firstOption.forEach(optionValue => {
+    restCombinations.forEach(restCombination => {
+      combinations.push([optionValue, ...restCombination]); // Add current option value to each combination
+    });
+  });
+  
+  return combinations;
+};
+
+// Extract values from the options
+const optionValues = options.map(option => option.values);
+
+// Generate combinations of values
+const combinations = generateOptionValueCombinations(optionValues);
+
+// Print the combinations
+console.log(combinations);
+  
 
   return (
     <Layout>
@@ -212,7 +260,10 @@ const App: React.FC = () => {
                             </Button>
                           </Form.Item>
 
-                          <Button onClick={() => handleToggleEdit(optionIndex)} style={{ cursor: 'pointer' }} >Done </Button>
+                          <Button onClick={
+                            () => {handleToggleEdit(optionIndex)
+                                  console.log(options);}                           
+                            } style={{ cursor: 'pointer' }} >Done </Button>
 
                         </>
                           :
@@ -242,7 +293,30 @@ const App: React.FC = () => {
                     </Card.Grid>
                 </Card>
 
-   
+                <Form.Item>
+                  <Button type="primary" onClick={handleGenerateVariants}>
+                    Generate Variants
+                  </Button>
+                </Form.Item>
+                <div>
+              <h2>Variants</h2>
+              {combinations.map((combination, index) => (
+        <Row key={index} gutter={[32, 32]} justify="space-around">
+          <Col span={4}>
+            {`${combination[0]}/${combination[1]}`}
+          </Col>
+          <Col span={8}>
+            <Input />
+          </Col>
+          <Col span={8}>
+            <Input />
+          </Col>
+          <Col span={4}>
+            <Button>Edit</Button>
+          </Col>
+        </Row>
+      ))}
+            </div>
         
               </Form>
             </div>
