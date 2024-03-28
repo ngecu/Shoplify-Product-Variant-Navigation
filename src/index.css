@@ -15,3 +15,9 @@
   width: 31px;
   border-radius: 50%;
 }
+
+.my-2{
+  margin-bottom: 0.5rem !important;
+  margin-top: 0.5rem !important;
+
+}

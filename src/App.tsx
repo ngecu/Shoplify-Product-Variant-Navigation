@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { LaptopOutlined, NotificationOutlined, UserOutlined,HeartOutlined,ShoppingCartOutlined, CheckOutlined,DeleteOutlined, EditOutlined   } from '@ant-design/icons';
-import { Layout, Menu, Breadcrumb, Input, Button, Form, Select, Row, Col, Card, Space, Tag } from 'antd';
-// import 'antd/dist/antd.css';
+import { Layout, Menu, Breadcrumb, Input, Button, Form, Select, Row, Col, Card, Space, Tag,CheckboxProps,Checkbox } from 'antd';
+
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import UploadComponent from './Components/UploadComponent';
@@ -18,9 +18,9 @@ const App: React.FC = () => {
   const [discountedPrice, setDiscountedPrice] = useState<string>('');
   const [nonDiscountedPrice, setNonDiscountedPrice] = useState<string>('');
   const [buyingPrice, setBuyingPrice] = useState<string>('')
-  const [productOptions, setProductOptions] = useState<string[]>([]);
   const [variants, setVariants] = useState<Variant[]>([]);
-  // const [optionValues, setOptionValues] = useState<{ [key: string]: string[] }>({});
+  const [showOptions,setShowOptions] = useState<Boolean>(false)
+
 
   const [options, setOptions] = useState<Option[]>([{ name: '', values: [''], editing: true }]);
   const handleOptionChange = (index: number, key: keyof Option, value: string) => {
@@ -73,6 +73,16 @@ const App: React.FC = () => {
     setOptions(newOptions);
   };
 
+  const handleToggleOptions: CheckboxProps['onChange'] = (e) => {
+    if(e.target.checked){
+      setShowOptions(true)
+    }
+    else{
+      setShowOptions(false)
+
+    }
+    console.log(`checked = ${e.target.checked}`);
+  };
 
 
 
@@ -93,8 +103,6 @@ const generateOptionValueCombinations = (options: string[][]): string[][] => {
   if (options.length === 0) return [[]]; // Base case: empty array for no options
 
   const [firstOption, ...restOptions] = options; // Destructure first option and rest options
-  console.log("first option ",firstOption);
-  console.log("rest option ",restOptions);
   
   const restCombinations = generateOptionValueCombinations(restOptions); // Generate combinations for rest of the options
 
@@ -182,7 +190,7 @@ console.log(combinations);
           </Breadcrumb>
           <Content style={{ padding: 24, margin: 0, minHeight: 280 }}>
             <div>
-              <h2>Add Product</h2>
+              
               <Form 
               layout="vertical"
               >
@@ -197,13 +205,13 @@ console.log(combinations);
       </Form.Item>
       </Card>
 
-      <Card className='my-2'>
-      <Form.Item label="Images">
+      <Card className='my-2' title="Images">
+      <Form.Item>
       <UploadComponent/>
       </Form.Item>
     </Card>
 
-    <Card className='my-2'>
+    <Card className='my-2' title="Pricing">
     <Row gutter={[16, 16]}>
           <Col span={12}>
             <Form.Item label="Discounted Price">
@@ -224,9 +232,13 @@ console.log(combinations);
 
     </Card>
 
-    <Card className='my-2'>
-    <Card.Grid style={{ width: '100%' }}>
-                  {options.map((option, optionIndex) => (
+    <Card className='my-2' title="Options">
+    <Checkbox onChange={handleToggleOptions}>This Product Has Options like Size or Color</Checkbox>        
+      </Card>
+      {showOptions && 
+      <>
+      <Card>
+      {options.map((option, optionIndex) => (
                     <div key={optionIndex}>
                       
                         {option.editing ?
@@ -240,7 +252,7 @@ console.log(combinations);
                             />
                           </Form.Item>
                           <br />
-                          <label>Option Vlaues</label>
+                          <label>Option Values</label>
                           {option.values.map((value, valueIndex) => (
                             <Form.Item key={valueIndex} >
                               <Input
@@ -267,57 +279,68 @@ console.log(combinations);
 
                         </>
                           :
-                          <>
+                          <div style={{borderBottom:"solid 1px #000"}}>
                           
-                          <label>{option.name}</label>
-                          <Button onClick={() => handleToggleEdit(optionIndex)}>Edit</Button>
-                          <br/>
+                           <div key={optionIndex} style={{ display: 'flex', justifyContent: 'space-between' }}>
+    <label>{option.name}</label>
+    <Button onClick={() => handleToggleEdit(optionIndex)}>Edit</Button>
+  </div>
+
+                          
                           {option.values.map((value, valueIndex) => (
                           <Tag key={valueIndex}>{value}</Tag>
                         ))}
                         
-                          </>
+                          </div >
                         }
                        
                     
                     </div>
                   ))}
-                  <Form.Item>
-                    
-                  </Form.Item>
-                  </Card.Grid>
-                  <Card.Grid style={{ width: '100%', textAlign: 'center' }} onClick={handleAddOption}>
-                    
+                
+                  <Button style={{ width: '100%', textAlign: 'center' }} onClick={handleAddOption}>
                       Add Option
-                    
-                    </Card.Grid>
-                </Card>
+                    </Button>
+      </Card>
 
-                <Form.Item>
-                  <Button type="primary" onClick={handleGenerateVariants}>
-                    Generate Variants
-                  </Button>
-                </Form.Item>
+        
                 <div>
+                  {combinations && combinations.length > 0 && combinations[0].length > 1  && 
+                <Card>
               <h2>Variants</h2>
+                
               {combinations.map((combination, index) => (
-        <Row key={index} gutter={[32, 32]} justify="space-around">
-          <Col span={4}>
-            {`${combination[0]}/${combination[1]}`}
+        <Row key={index} gutter={[32, 32]} className='my-2' justify="space-around">
+            <Col key={index} span={4}>
+
+            {combination.map((value, idx) => (
+  <>
+    <span>{value}</span>
+    {combination.length > 1 && idx !== combination.length - 1 && <span>.</span>}
+  </>
+))}
+
           </Col>
-          <Col span={8}>
-            <Input />
-          </Col>
-          <Col span={8}>
-            <Input />
-          </Col>
-          <Col span={4}>
-            <Button>Edit</Button>
-          </Col>
+          
+            
+              <Col span={4}>
+                <Input />
+              </Col>
+              <Col span={4}>
+                <Input />
+              </Col>
+              <Col span={4}>
+                <Button>Edit </Button>
+              </Col>
+            
+          
         </Row>
       ))}
+      </Card>
+}
             </div>
-        
+            </>
+}
               </Form>
             </div>
           
