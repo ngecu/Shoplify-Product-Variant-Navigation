@@ -5,6 +5,7 @@ import { Layout, Menu, Breadcrumb, Input, Button, Form, Select, Row, Col, Card, 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import UploadComponent from './Components/UploadComponent';
+import { Option } from './Interface/OptionInterface';
 
 
 const { Header, Content, Sider } = Layout;
@@ -19,7 +20,6 @@ const App: React.FC = () => {
   const [productOptions, setProductOptions] = useState<string[]>([]);
   const [variants, setVariants] = useState<string[]>([]);
   const [options, setOptions] = useState<Option[]>([{ name: '', values: [''], editing: true }]);
-
   const handleOptionChange = (index: number, key: keyof Option, value: string) => {
     const newOptions = [...options];
     newOptions[index][key] = value;
@@ -48,6 +48,19 @@ const App: React.FC = () => {
     setOptions(newOptions);
   };
 
+  const handleOptionValueChange = (optionName: string, valueIndex: number, value: string) => {
+    const updatedOptions: Option[] = options.map(option => {
+      if (option.name === optionName) {
+        return {
+          ...option,
+          values: option.values.map((val, idx) => idx === valueIndex ? value : val)
+        };
+      }
+      return option;
+    });
+    setOptions(updatedOptions);
+  };
+
   const handleGenerateVariants = () => {
     // Implement your logic for generating variants
   };
@@ -57,7 +70,6 @@ const App: React.FC = () => {
     newOptions[index].editing = !newOptions[index].editing;
     setOptions(newOptions);
   };
-
 
   return (
     <Layout>
@@ -165,60 +177,76 @@ const App: React.FC = () => {
     </Card>
 
     <Card className='my-2'>
+    <Card.Grid style={{ width: '100%' }}>
                   {options.map((option, optionIndex) => (
                     <div key={optionIndex}>
-                      <Space>
+                      
                         {option.editing ?
-                          <Form.Item label={`Option ${optionIndex + 1} Name`} extra={<EditOutlined onClick={() => handleToggleEdit(optionIndex)} style={{ cursor: 'pointer' }} />}>
+                        <>
+                          <Form.Item label={`Option  Name`} >
                             <Input
                               placeholder={`Enter option ${optionIndex + 1} name`}
                               value={option.name}
                               onChange={(e) => handleOptionChange(optionIndex, 'name', e.target.value)}
+                              addonAfter={<Button type="text" icon={<DeleteOutlined />} onClick={() => handleDeleteOption(optionIndex)} danger />}
                             />
                           </Form.Item>
+                          <br />
+                          <label>Option Vlaues</label>
+                          {option.values.map((value, valueIndex) => (
+                            <Form.Item key={valueIndex} >
+                              <Input
+                                placeholder={`Enter value ${valueIndex + 1}`}
+                                value={value}
+                                onChange={(e) => handleOptionValueChange(option.name, valueIndex, e.target.value)}
+                                addonAfter={<Button type="text" icon={<DeleteOutlined />} onClick={() => handleDeleteValue(optionIndex,valueIndex)} />}
+
+                              />
+                            </Form.Item>
+                          ))}
+
+
+                          <Form.Item>
+                            <Button type="dashed" onClick={() => handleAddValue(optionIndex)}>
+                              Add Value
+                            </Button>
+                          </Form.Item>
+
+                          <Button onClick={() => handleToggleEdit(optionIndex)} style={{ cursor: 'pointer' }} >Done </Button>
+
+                        </>
                           :
-                          <Tag>{option.name}</Tag>
-                        }
-                        {option.values.map((value, valueIndex) => (
+                          <>
+                          
+                          <label>{option.name}</label>
+                          <Button onClick={() => handleToggleEdit(optionIndex)}>Edit</Button>
+                          <br/>
+                          {option.values.map((value, valueIndex) => (
                           <Tag key={valueIndex}>{value}</Tag>
                         ))}
-                        <Button type="text" icon={<DeleteOutlined />} onClick={() => handleDeleteOption(optionIndex)} danger />
-                      </Space>
-                      {option.editing &&
-                        <Form.Item>
-                          <Button type="dashed" onClick={() => handleAddValue(optionIndex)}>
-                            Add Value
-                          </Button>
-                        </Form.Item>
-                      }
+                        
+                          </>
+                        }
+                       
+                    
                     </div>
                   ))}
                   <Form.Item>
-                    <Button type="dashed" onClick={handleAddOption}>
-                      Add Option
-                    </Button>
+                    
                   </Form.Item>
+                  </Card.Grid>
+                  <Card.Grid style={{ width: '100%', textAlign: 'center' }} onClick={handleAddOption}>
+                    
+                      Add Option
+                    
+                    </Card.Grid>
                 </Card>
 
    
-            
-                <Form.Item>
-                  <Button type="primary" onClick={handleGenerateVariants}>
-                    Generate Variants
-                  </Button>
-                </Form.Item>
+        
               </Form>
             </div>
-            <div>
-              <h2>Variants</h2>
-              <Select mode="tags" style={{ width: '100%' }} placeholder="Select variants">
-                {variants.map((variant, index) => (
-                  <Option key={index} value={variant}>
-                    {variant}
-                  </Option>
-                ))}
-              </Select>
-            </div>
+          
           </Content>
         </Layout>
       </Layout>
