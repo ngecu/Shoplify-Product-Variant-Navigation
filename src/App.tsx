@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { LaptopOutlined, NotificationOutlined, UserOutlined,HeartOutlined,ShoppingCartOutlined, CheckOutlined,DeleteOutlined, EditOutlined   } from '@ant-design/icons';
-import { Layout, Menu, Breadcrumb, Input, Button, Form, Select, Row, Col, Card, Space, Tag,CheckboxProps,Checkbox } from 'antd';
+import { LaptopOutlined, NotificationOutlined, UserOutlined,HeartOutlined,ShoppingCartOutlined, CheckOutlined,DeleteOutlined,   } from '@ant-design/icons';
+import { Layout, Menu, Breadcrumb, Input, Button, Form, Select, Row, Col, Card,  Tag,CheckboxProps,Checkbox } from 'antd';
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import UploadComponent from './Components/UploadComponent';
 import { Option } from './Interface/OptionInterface';
-import { Variant } from './Interface/VariantInterface';
+
 
 
 const { Header, Content, Sider } = Layout;
@@ -18,7 +18,7 @@ const App: React.FC = () => {
   const [discountedPrice, setDiscountedPrice] = useState<string>('');
   const [nonDiscountedPrice, setNonDiscountedPrice] = useState<string>('');
   const [buyingPrice, setBuyingPrice] = useState<string>('')
-  const [variants, setVariants] = useState<Variant[]>([]);
+
   const [showOptions,setShowOptions] = useState<Boolean>(false)
 
 
@@ -87,16 +87,7 @@ const App: React.FC = () => {
 
 
 
-  const handleVariantChange = (index: number, key: string, value: string) => {
-    const newVariants = [...variants];
-    newVariants[index][key] = value;
-    setVariants(newVariants);
-  };
 
-  const handleGenerateVariants = () => {
-    console.log(options);
-    
-  };
 
   // Define the generateOptionValueCombinations function
 const generateOptionValueCombinations = (options: string[][]): string[][] => {
