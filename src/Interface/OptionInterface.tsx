@@ -1,3 +1,5 @@
-export interface OptionValues {
-    [key: string]: string[];
+interface Option {
+    name: string;
+    values: string[];
+    editing: boolean;
   }

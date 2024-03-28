@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { LaptopOutlined, NotificationOutlined, UserOutlined,HeartOutlined,ShoppingCartOutlined, CheckOutlined  } from '@ant-design/icons';
-import { Layout, Menu, Breadcrumb, Input, Button, Form, Select, Row, Col, Card } from 'antd';
+import { LaptopOutlined, NotificationOutlined, UserOutlined,HeartOutlined,ShoppingCartOutlined, CheckOutlined,DeleteOutlined, EditOutlined   } from '@ant-design/icons';
+import { Layout, Menu, Breadcrumb, Input, Button, Form, Select, Row, Col, Card, Space, Tag } from 'antd';
 // import 'antd/dist/antd.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import UploadComponent from './Components/UploadComponent';
-import { OptionValues } from './Interface/OptionInterface';
+
 
 const { Header, Content, Sider } = Layout;
 const { Option } = Select;
@@ -18,26 +18,45 @@ const App: React.FC = () => {
   const [buyingPrice, setBuyingPrice] = useState<string>('')
   const [productOptions, setProductOptions] = useState<string[]>([]);
   const [variants, setVariants] = useState<string[]>([]);
-  const [optionValues, setOptionValues] = useState<OptionValues>({});
+  const [options, setOptions] = useState<Option[]>([{ name: '', values: [''], editing: true }]);
 
-  const handleOptionValueChange = (optionName: string, valueIndex: number, value: string) => {
-    const updatedOptionValues: OptionValues = { ...optionValues };
-    if (!updatedOptionValues[optionName]) updatedOptionValues[optionName] = [];
-    updatedOptionValues[optionName][valueIndex] = value;
-    setOptionValues(updatedOptionValues);
+  const handleOptionChange = (index: number, key: keyof Option, value: string) => {
+    const newOptions = [...options];
+    newOptions[index][key] = value;
+    setOptions(newOptions);
   };
 
   const handleAddOption = () => {
-    // Add new option with empty array for values
-    const newOptionName = `Option ${Object.keys(optionValues).length + 1}`;
-    setOptionValues({ ...optionValues, [newOptionName]: [] });
+    setOptions([...options, { name: '', values: [''], editing: true }]);
+  };
+
+  const handleDeleteOption = (index: number) => {
+    const newOptions = [...options];
+    newOptions.splice(index, 1);
+    setOptions(newOptions);
+  };
+
+  const handleAddValue = (index: number) => {
+    const newOptions = [...options];
+    newOptions[index].values.push('');
+    setOptions(newOptions);
+  };
+
+  const handleDeleteValue = (optionIndex: number, valueIndex: number) => {
+    const newOptions = [...options];
+    newOptions[optionIndex].values.splice(valueIndex, 1);
+    setOptions(newOptions);
   };
 
   const handleGenerateVariants = () => {
     // Implement your logic for generating variants
   };
 
-
+  const handleToggleEdit = (index: number) => {
+    const newOptions = [...options];
+    newOptions[index].editing = !newOptions[index].editing;
+    setOptions(newOptions);
+  };
 
 
   return (
@@ -146,33 +165,40 @@ const App: React.FC = () => {
     </Card>
 
     <Card className='my-2'>
-    {Object.entries(optionValues).map(([optionName, values], index) => (
-          <div key={optionName}>
-            <h4>{optionName}</h4>
-            {values.map((value, valueIndex) => (
-              <Form.Item key={valueIndex} label={`Value ${valueIndex + 1}`}>
-                <Input
-                  placeholder={`Enter value ${valueIndex + 1}`}
-                  value={value}
-                  onChange={(e) => handleOptionValueChange(optionName, valueIndex, e.target.value)}
-                />
-              </Form.Item>
-            ))}
-            <Form.Item>
-              <Button type="dashed" onClick={() => handleOptionValueChange(optionName, values.length, '')}>
-                Add Value
-              </Button>
-            </Form.Item>
-          </div>
-        ))}
-
-        {/* Add Option Button */}
-        <Form.Item>
-          <Button type="dashed" onClick={handleAddOption}>
-            Add Option
-          </Button>
-        </Form.Item>
-      </Card>
+                  {options.map((option, optionIndex) => (
+                    <div key={optionIndex}>
+                      <Space>
+                        {option.editing ?
+                          <Form.Item label={`Option ${optionIndex + 1} Name`} extra={<EditOutlined onClick={() => handleToggleEdit(optionIndex)} style={{ cursor: 'pointer' }} />}>
+                            <Input
+                              placeholder={`Enter option ${optionIndex + 1} name`}
+                              value={option.name}
+                              onChange={(e) => handleOptionChange(optionIndex, 'name', e.target.value)}
+                            />
+                          </Form.Item>
+                          :
+                          <Tag>{option.name}</Tag>
+                        }
+                        {option.values.map((value, valueIndex) => (
+                          <Tag key={valueIndex}>{value}</Tag>
+                        ))}
+                        <Button type="text" icon={<DeleteOutlined />} onClick={() => handleDeleteOption(optionIndex)} danger />
+                      </Space>
+                      {option.editing &&
+                        <Form.Item>
+                          <Button type="dashed" onClick={() => handleAddValue(optionIndex)}>
+                            Add Value
+                          </Button>
+                        </Form.Item>
+                      }
+                    </div>
+                  ))}
+                  <Form.Item>
+                    <Button type="dashed" onClick={handleAddOption}>
+                      Add Option
+                    </Button>
+                  </Form.Item>
+                </Card>
 
    
             
