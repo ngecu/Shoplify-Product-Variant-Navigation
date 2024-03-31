@@ -1,30 +1,59 @@
-# React + TypeScript + Vite
+# E-commerce Product Variants Web App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a React-based web application that allows users to add product variants similar to the functionality demonstrated in the provided video. Users can add various options (e.g., size, color) along with their corresponding values, and the app dynamically generates product variants based on the combination of these options.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Product Information**: Users can enter basic product details such as title, description, discounted price, and non-discounted price.
+- **Images**: Ability to upload images for the product.
+- **Pricing**: Input fields for discounted price, non-discounted price, and a hidden field for the buying price.
+- **Options**: Users can specify product options (e.g., size, color) and their corresponding values. They can add, edit, and delete options and values as needed.
+- **Dynamic Variant Generation**: The app dynamically generates product variants based on the combinations of options and values entered by the user.
+- **Responsive Design**: The user interface is designed to be responsive and adapts to different screen sizes.
 
-## Expanding the ESLint configuration
+## How to Use
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. **Clone the Repository**: Clone this repository to your local machine using the following command:
+   ```
+   git clone https://github.com/ngecu/Shoplify-Product-Variant-Navigation.git
+   ```
 
-- Configure the top-level `parserOptions` property like this:
+2. **Install Dependencies**: Navigate into the project directory and install the necessary dependencies using npm or yarn.
+   ```
+   cd e-commerce-product-variants
+   npm install
+   ```
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+3. **Run the Application**: Start the development server to run the application locally.
+   ```
+   npm start
+   ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+4. **Access the Application**: Open your web browser and visit `http://localhost:5173` to access the application.
+
+## Technologies Used
+
+- React: JavaScript library for building user interfaces
+- Ant Design: UI library for React components
+- React Quill: Rich text editor component for React
+- Firebase (optional): Hosting platform for deploying the web application (not implemented in this project)
+
+## Structure
+
+- **src**: Contains the source code for the React application.
+  - **Components**: Reusable components used throughout the application.
+  - **App.js**: Main component containing the application logic and UI.
+  - **UploadComponent.js**: Component for uploading images.
+- **public**: Contains static assets and the HTML template.
+
+## Contributors
+
+- [Robinson Ngecu](https://github.com/ngecu)
+
+## Feedback and Support
+
+For any feedback, suggestions, or issues related to the project, please create an issue on the GitHub repository.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
