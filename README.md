@@ -1,5 +1,7 @@
 # E-commerce Product Variants Web App
 
+![E-commerce Product Variants Web App](Screenshot.png)
+
 This project is a React-based web application that allows users to add product variants similar to the functionality demonstrated in the provided video. Users can add various options (e.g., size, color) along with their corresponding values, and the app dynamically generates product variants based on the combination of these options.
 
 ## Features
