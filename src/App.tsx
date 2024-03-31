@@ -5,7 +5,12 @@ import { Layout, Menu, Breadcrumb, Input, Button, Form, Select, Row, Col, Card, 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import UploadComponent from './Components/UploadComponent';
-import { Option } from './Interface/OptionInterface';
+
+ interface Option {
+  name: string;
+  values: string[];
+  editing: boolean;
+}
 
 
 
@@ -25,7 +30,7 @@ const App: React.FC = () => {
   const [options, setOptions] = useState<Option[]>([{ name: '', values: [''], editing: true }]);
   const handleOptionChange = (index: number, key: keyof Option, value: string) => {
     const newOptions = [...options];
-    newOptions[index][key] = value;
+    newOptions[index][key] = value as never;
     setOptions(newOptions);
   };
 
