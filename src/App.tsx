@@ -125,7 +125,6 @@ console.log(combinations);
 
   return (
     <Layout>
-      <>Hello World</>
         <Header style={{ background: "#D21812", color: 'white' }}>
       <Row align="middle">
         <Col flex={1}>
